@@ -1,7 +1,7 @@
 # Image Resizer
 
 ### Description:
-    ...
+    Автор:Сагалов Леонид
 
 ### Create venv:
     make venv
