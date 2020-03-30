@@ -1,4 +1,4 @@
-version: '2.4'
+version: '3.3'
 
 services:
   code:
@@ -6,7 +6,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      network: host
+    networks:
+      - default
     depends_on:
         - redis
 
@@ -18,3 +19,7 @@ services:
       - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
     ports:
       - 6379:6379
+
+  rq-worker:
+    image: jaredv/rq-docker:0.0.2
+    command: rq worker -u redis://rq-server:6379 high normal low
