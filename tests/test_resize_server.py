@@ -38,10 +38,10 @@ def not_square_image_data():
         yield image_data.decode('ascii')
 
 
-@pytest.fixture(autouse=True)
-def clean_db():
-    yield
-    rd.flushall()
+# @pytest.fixture(autouse=True)
+# def clean_db():
+#     yield
+#     rd.flushall()
 
 
 @pytest.fixture(autouse=True)
@@ -112,10 +112,10 @@ def test_get_task_state(client, square_image_data):
     assert isinstance(data['Status'], str)
 
 
-def test_get_image_empty(client):
-    response = client.get('/task/0/32')
-    data = json.loads(response.get_data())
-    assert data['Error'] == 'Please check id of image and task status'
+# def test_get_image_empty(client):
+#     response = client.get('/task/0/32')
+#     data = json.loads(response.get_data())
+#     assert data['Error'] == 'Please check id of image and task status'
 
 
 def test_change_size():
