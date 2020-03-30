@@ -9,7 +9,6 @@ from rq import Queue
 
 server = Flask(__name__)
 rd = redis.Redis()
-rd.flushdb()
 queue_tasks = Queue(connection=rd)
 
 
