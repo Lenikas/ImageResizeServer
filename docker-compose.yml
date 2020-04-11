@@ -8,17 +8,18 @@ services:
       dockerfile: Dockerfile
     networks:
       - default
-    depends_on:
-        - redis
 
-  redis:
-    image: 'bitnami/redis:5.0'
-    environment:
-      # ALLOW_EMPTY_PASSWORD is recommended only for development.
-      - ALLOW_EMPTY_PASSWORD=yes
-      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
-    ports:
-      - 6379:6379
+
+#  redis:
+#    image: 'bitnami/redis:5.0'
+#    environment:
+#      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+#      - ALLOW_EMPTY_PASSWORD=yes
+#      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+#    ports:
+#      - 6379:6379
+#    depends_on:
+#      - rq-worker
 
   rq-worker:
     image: jaredv/rq-docker:0.0.2

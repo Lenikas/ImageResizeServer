@@ -7,25 +7,28 @@ from flask import Flask, jsonify, request
 from PIL import Image, UnidentifiedImageError
 from rq import Queue
 
+
 server = Flask(__name__)
 rd = redis.Redis()
+rd.set('id', '0')
 queue_tasks = Queue(connection=rd)
 
 
 @server.route('/task', methods=['POST'])
 def create_task() -> Any:
     if not request.json or 'image' not in request.json:
-        return jsonify({'Error': 'Please give image in bytes format'})
+        return jsonify({'Error': 'Please give image in bytes format'}), 400
 
     byte_image: bytes = bytes(request.json.get('image'), 'ascii')
     try:
         temp_image = create_temp_image(byte_image)
     except UnidentifiedImageError:
-        return jsonify({'Warning': 'Incorrect data for image'})
+        return jsonify({'Warning': 'Incorrect data for image'}), 400
 
     if not check_quadratic(temp_image):
-        return jsonify({'Error': 'Picture size must be quadratic'})
-    image_id = len(queue_tasks)
+        return jsonify({'Error': 'Picture size must be quadratic'}), 400
+
+    image_id = rd.incr('id')
     rd.hmset(str(image_id), {'original': byte_image})
     job_id = put_task(temp_image, image_id)
 
@@ -49,9 +52,8 @@ def check_quadratic(temp_image: Image) -> bool:
 
 def create_temp_image(byte_image: bytes) -> Image:
     decode_image = base64.decodebytes(byte_image)
-    with open('temp', 'wb') as f:
-        f.write(decode_image)
-        image = Image.open('temp')
+    temp_file = BytesIO(decode_image)
+    image = Image.open(temp_file)
     return image
 
 

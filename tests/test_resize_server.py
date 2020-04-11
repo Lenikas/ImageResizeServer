@@ -38,10 +38,10 @@ def not_square_image_data():
         yield image_data.decode('ascii')
 
 
-# @pytest.fixture(autouse=True)
-# def clean_db():
-#     yield
-#     rd.flushall()
+@pytest.fixture(autouse=True)
+def clean_db():
+    yield
+    rd.flushall()
 
 
 @pytest.fixture(autouse=True)
@@ -77,6 +77,7 @@ def test_create_task_bad_request(client):
     )
     data = json.loads(response.get_data())
     assert data['Error'] == 'Please give image in bytes format'
+    assert response.status_code == 400
 
 
 def test_create_task(client, square_image_data):
@@ -90,6 +91,7 @@ def test_create_task_not_square(client, not_square_image_data):
     response = post_data(client, not_square_image_data)
     data = json.loads(response.get_data())
     assert data['Error'] == 'Picture size must be quadratic'
+    assert response.status_code == 400
 
 
 def test_create_temp_image(square_image_data):
@@ -112,10 +114,10 @@ def test_get_task_state(client, square_image_data):
     assert isinstance(data['Status'], str)
 
 
-# def test_get_image_empty(client):
-#     response = client.get('/task/0/32')
-#     data = json.loads(response.get_data())
-#     assert data['Error'] == 'Please check id of image and task status'
+def test_get_image_empty(client):
+    response = client.get('/task/0/32')
+    data = json.loads(response.get_data())
+    assert data['Error'] == 'Please check id of image and task status'
 
 
 def test_change_size():
