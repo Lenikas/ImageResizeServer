@@ -26,7 +26,8 @@ format:
 	$(VENV)/bin/autoflake --recursive --in-place --remove-all-unused-imports $(ALL)
 	$(VENV)/bin/unify --in-place --recursive $(ALL)
 
-up: ; # write your own
+up:
+	python start.py
 
 build:
 	docker-compose build code
